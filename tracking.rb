@@ -1,5 +1,6 @@
 require 'spreadsheet'
 require './helpers'
+require 'csv'
 
 def mysql_query(connection,query)
   begin
@@ -11,7 +12,7 @@ def mysql_query(connection,query)
 end
 
 
-
+CSV.open("shipment52_not_in_openstack.csv","w") do |csv1|
 book = Spreadsheet.open('Copy of Shipment 56.xls')
 sheet1 = book.worksheet('Shipping list')
 sum=0
@@ -39,19 +40,28 @@ sheet1.each do |row|
       end
     end
 
-    cmd="select * from items where code='#{node}'"
-    puts cmd
-    rs = mysql_query(connection, cmd)
-    row_num=0
-    rs.each do |row|
-      row_num+=1
+    check_exsit="select * from items where code='#{node}' or old_peel_new='#{node}'"
+    rs1 = mysql_query(connection, check_exsit)
+    row_num1=0
+    rs1.each do |row1|
+      row_num1+=1
     end
-    if row_num!=0
-      puts "row number #{row_num}------------------------------------------------"
+    if row_num1!=0
+      check_mounted="select * from items where (code='#{node}' or old_peel_new='#{node}') and noid IS NULL"
+      rs2 = mysql_query(connection, check_mounted)
+      row_num2=0
+      rs2.each do |row2|
+        row_num2+=1
+        csv1 << [row2['code'],row2['old_peel_new']]
+      end
+
+      puts "row number #{row_num1}------------------------------------------------"
     else
       puts "not in database"
+      #csv1 << [row[1],row[5],row[6]]
       #insert
     end
   end
 end
 Helpers.close_mysql_connection(connection)
+end
