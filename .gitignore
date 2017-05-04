@@ -2,3 +2,4 @@
 *.yml
 *.csv
 results/
+*.txt

@@ -33,7 +33,7 @@ sheet1.each do |row|
       result=File.file?("/diginit/work/peel/metadata/N/#{first}/#{second}/#{node}.xml")
       if result==true
         sum3+=1
-        puts "parent #{sum} #{sum3}"
+        puts "parent #{sum} #{sum3} #{node}"
         #csv1 << [row[1],row[5]]
         #save into a csv about parent items Name
       end
@@ -63,7 +63,7 @@ sheet1.each do |row|
           row_num2=0
           rs2.each do |row2|
             row_num2+=1
-            csv1 << [row2['code'],row2['old_peel_new']]
+            #csv1 << [row2['code'],row2['old_peel_new']]
           end
 
           #puts "row number #{row_num1}------------------------------------------------"
@@ -71,11 +71,11 @@ sheet1.each do |row|
           #puts "not in database #{node}"
           #csv1 << [row[1],row[5]]
           if not row[8].nil?
-            insert="INSERT INTO items_test(code, digstatus,scanimages) VALUES ('#{node}','shipped','#{row[8]}') ON DUPLICATE KEY UPDATE digstatus=VALUES(digstatus), scanimages=VALUES(scanimages)"
+            insert="INSERT INTO items(code, digstatus,scanimages) VALUES ('#{node}','shipped','#{row[8]}') ON DUPLICATE KEY UPDATE digstatus=VALUES(digstatus), scanimages=VALUES(scanimages)"
           else
-            insert="INSERT INTO items_test(code, digstatus) VALUES ('#{node}','shipped') ON DUPLICATE KEY UPDATE digstatus=VALUES(digstatus)"
+            insert="INSERT INTO items(code, digstatus) VALUES ('#{node}','shipped') ON DUPLICATE KEY UPDATE digstatus=VALUES(digstatus)"
           end
-          #mysql_query(connection, insert)
+          mysql_query(connection, insert)
         end
       end
     end
