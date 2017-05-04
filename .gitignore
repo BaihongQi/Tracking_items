@@ -1,3 +1,4 @@
 *.xls*
 *.yml
 *.csv
+results/
